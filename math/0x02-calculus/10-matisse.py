@@ -7,6 +7,8 @@ def poly_derivative(poly):
     deriv = []
     if poly is None:
         return None
+    if len(poly) < 2:
+        return [0]
     for exp, coef in enumerate(poly):
         deriv.append(exp*coef)
     deriv.pop(0)
