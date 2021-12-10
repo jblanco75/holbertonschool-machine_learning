@@ -17,6 +17,6 @@ def poly_integral(poly, C=0):
         return [C]
     integral = [C]
     for exp, coef in enumerate(poly):
-        integral.append((1/(exp+1))*coef)
+        integral.append((coef/(exp+1)))
     integral = [int(i) if i % 1 == 0 else i for i in integral]
     return integral
