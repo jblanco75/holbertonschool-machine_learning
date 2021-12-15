@@ -19,3 +19,18 @@ class Poisson:
             else:
                 lambtha = float(sum(data) / len(data))
                 self.lambtha = lambtha
+
+    def pmf(self, k):
+        """Probability Mass Function"""
+        if type(k) is not int:
+            k = int(k)
+        if k < 0:
+            return 0
+        e = 2.7182818285
+        e_m = e ** - self.lambtha
+        k_m = self.lambtha ** k
+        k_factorial = 1
+        for i in range(1, k + 1):
+            k_factorial *= i
+        pmf = e_m * k_m / k_factorial
+        return pmf
