@@ -45,3 +45,14 @@ class Binomial:
         bin_co = factorial_n / (factorial_k * factorial_n_k)
         pmf = bin_co * (self.p ** k) * (q ** (self.n - k))
         return pmf
+
+    def cdf(self, k):
+        """Cumulative Distribution Function"""
+        if type(k) is not int:
+            k = int(k)
+        if k < 0:
+            return 0
+        cdf = 0
+        for i in range(k + 1):
+            cdf += self.pmf(i)
+        return cdf
