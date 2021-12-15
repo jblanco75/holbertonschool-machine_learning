@@ -37,3 +37,12 @@ class Normal:
         coeficient = 1 / (self.stddev * (2 * pi) ** (1 / 2))
         pdf = coeficient * e ** exponent
         return pdf
+
+    def cdf(self, x):
+        """Cumulative Distribution Function"""
+        pi = 3.1415926536
+        val = (x - self.mean) / (self.stddev * (2 ** (1 / 2)))
+        erf1 = (2 / pi ** (1 / 2))
+        erf2 = (val - (val**3)/3 + (val**5)/10 - (val**7)/42 + (val**9) / 216)
+        cdf = (1 / 2) * (1 + erf1 * erf2)
+        return cdf
