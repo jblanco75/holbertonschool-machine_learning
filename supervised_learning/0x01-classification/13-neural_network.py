@@ -64,19 +64,14 @@ class NeuralNetwork:
         """
         Calculates one pass of gradient descent on the neural network
         """
-        # gradient descent for hidden layer
         dz2 = A2 - Y
         dw2 = np.matmul(A1, dz2.T) / A1.shape[1]
         db2 = np.sum(dz2, axis=1, keepdims=True) / A2.shape[1]
-
-        # derivative of the sigmoid function
         da1 = A1 * (1 - A1)
-        # gradient descent for output layer
         dz1 = np.matmul(self.__W2.T, dz2)
         dz1 = dz1 * da1
         dw1 = np.matmul(X, dz1.T) / A1.shape[1]
         db1 = np.sum(dz1, axis=1, keepdims=True) / A1.shape[1]
-        # updated value for weights and bias
         self.__W2 = self.__W2 - alpha * dw2.T
         self.__b2 = self.__b2 - alpha * db2
         self.__W1 = self.__W1 - alpha * dw1.T
