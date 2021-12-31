@@ -151,7 +151,7 @@ class DeepNeuralNetwork:
             with open(filename, 'rb') as f:
                 pickled = pickle.load(f)
                 f.close()
-            return pickled
+                return pickled
         except Exception:
             return None
 
