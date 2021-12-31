@@ -139,7 +139,7 @@ class DeepNeuralNetwork:
             return
         if filename.split(".")[-1] != "pkl":
             filename = filename + ".pkl"
-        with open(filename, 'ab') as f:
+        with open(filename, 'wb') as f:
             pickle.dump(self, f)
             f.close()
 
