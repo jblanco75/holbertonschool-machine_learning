@@ -129,7 +129,7 @@ class DeepNeuralNetwork:
             plt.ylabel("cost")
             plt.show()
 
-            return self.evaluate(X, Y)
+        return self.evaluate(X, Y)
 
     def save(self, filename):
         """
@@ -139,7 +139,7 @@ class DeepNeuralNetwork:
             return
         if filename.split(".")[-1] != "pkl":
             filename = filename + ".pkl"
-        with open(filename, 'wb') as f:
+        with open(filename, 'ab') as f:
             pickle.dump(self, f)
             f.close()
 
@@ -151,7 +151,8 @@ class DeepNeuralNetwork:
         try:
             with open(filename, 'rb') as f:
                 pickled_obj = pickle.load(f)
-                return pickled_obj
+                f.close()
+            return pickled_obj
         except (OSError, IOError) as e:
             return None
 
