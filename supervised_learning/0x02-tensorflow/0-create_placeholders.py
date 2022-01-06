@@ -4,7 +4,8 @@ Function that returns two placeholders, x and y, for the neural network
 """
 
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 
 def create_placeholders(nx, classes):
