@@ -33,6 +33,7 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes, activations,
 
     init = tf.global_variables_initializer()
     sess = tf.Session()
+    saver = tf.train.Saver()
 
     with tf.Session() as sess:
         sess.run(init)
