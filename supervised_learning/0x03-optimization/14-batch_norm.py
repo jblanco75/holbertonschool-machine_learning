@@ -6,6 +6,7 @@ layer for a neural network in tensorflow
 
 
 import tensorflow.compat.v1 as tf
+tf.disable_eager_execution()
 
 
 def create_batch_norm_layer(prev, n, activation):
