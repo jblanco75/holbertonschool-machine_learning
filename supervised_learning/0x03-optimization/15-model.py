@@ -16,7 +16,7 @@ def create_layer(prev, n, activation):
     """
     Returns: the tensor output of the layer
     """
-    weights = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    weights = tf.keras.initializers.VarianceScaling(mode='fan_avg')
     layer = tf.layers.Dense(units=n, activation=activation,
                             name="layer", kernel_initializer=weights)
     return layer(prev)
@@ -26,7 +26,7 @@ def create_batch_norm_layer(prev, n, activation):
     """
     Returns: a tensor of the activated output for the layer
     """
-    k_init = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    k_init = tf.keras.initializers.VarianceScaling(mode='fan_avg')
     layer = tf.layers.Dense(n, kernel_initializer=k_init)
     mean, variance = tf.nn.moments(layer(prev), axes=[0])
     gamma = tf.Variable(tf.constant(1.0, shape=[n]), trainable=True,
@@ -103,6 +103,8 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
     """
     nx = Data_train[0].shape[1]
     classes = Data_train[1].shape[1]
+    (X_train, Y_train) = Data_train
+    (X_valid, Y_valid) = Data_valid
     x = tf.placeholder(tf.float32, shape=[None, nx], name='x')
     y = tf.placeholder(tf.float32, shape=[None, classes], name='y')
     y_pred = forward_prop(x, layers, activations)
