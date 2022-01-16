@@ -17,8 +17,7 @@ def create_layer(prev, n, activation):
     w = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
     layer = tf.layers.Dense(units=n, activation=activation,
                             name="layer", kernel_initializer=w)
-    y = layer(prev)
-    return (y)
+    return layer(prev)
 
 
 def create_batch_norm_layer(prev, n, activation):
@@ -82,7 +81,9 @@ def shuffle_data(X, Y):
 def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
           beta2=0.999, epsilon=1e-8, decay_rate=1, batch_size=32, epochs=5,
           save_path='/tmp/model.ckpt'):
-    """Main"""
+    """
+    Returns: the path where the model was saved
+    """
     nx = Data_train[0].shape[1]
     classes = Data_train[1].shape[1]
     x = tf.placeholder(tf.float32, shape=[None, nx], name='x')
