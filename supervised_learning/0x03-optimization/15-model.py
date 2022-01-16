@@ -13,41 +13,53 @@ tf.disable_eager_execution()
 
 
 def create_layer(prev, n, activation):
-    """Function that returns a tensor output"""
-    w = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    """
+    Returns: the tensor output of the layer
+    """
+    weights = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
     layer = tf.layers.Dense(units=n, activation=activation,
-                            name="layer", kernel_initializer=w)
+                            name="layer", kernel_initializer=weights)
     return layer(prev)
 
 
 def create_batch_norm_layer(prev, n, activation):
-    """Function that returns an activated tensor output"""
-    w = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
-    layer = tf.layers.Dense(units=n, kernel_initializer=w, name="layer")
-    y = layer(prev)
-    mean, variance = tf.nn.moments(y, [0])
-    gamma = tf.Variable(tf.constant(1.0, shape=[n]), trainable=True)
-    beta = tf.Variable(tf.constant(0.0, shape=[n]), trainable=True)
-    y_norm = tf.nn.batch_normalization(y, mean, variance, offset=beta,
-                                       scale=gamma, variance_epsilon=1e-8)
-    return (activation(y_norm))
+    """
+    Returns: a tensor of the activated output for the layer
+    """
+    k_init = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    layer = tf.layers.Dense(n, kernel_initializer=k_init)
+    mean, variance = tf.nn.moments(layer(prev), axes=[0])
+    gamma = tf.Variable(tf.constant(1.0, shape=[n]), trainable=True,
+                        name='gamma')
+    beta = tf.Variable(tf.constant(0.0, shape=[n]), trainable=True,
+                       name='beta')
+    epsilon = 1e-8
+    batch_norm = tf.nn.batch_normalization(layer(prev), mean, variance,
+                                           beta, gamma, epsilon)
+    return activation(batch_norm)
 
 
 def forward_prop(x, layer_sizes=[], activations=[]):
-    """Forward Propagation Function"""
-    A = create_batch_norm_layer(x, layer_sizes[0], activations[0])
-    for i in range(1, len(layer_sizes)):
-        if i != len(layer_sizes) - 1:
-            A = create_batch_norm_layer(A, layer_sizes[i], activations[i])
+    """
+    Returns: the prediction of the network in tensor form
+    """
+    output = create_batch_norm_layer(x, layer_sizes[0], activations[0])
+    for layer in range(1, len(layer_sizes)):
+        if layer != len(layer_sizes) - 1:
+            output = create_batch_norm_layer(output, layer_sizes[layer],
+                                             activations[layer])
         else:
-            A = create_layer(A, layer_sizes[i], activations[i])
-        return A
+            output = create_layer(output, layer_sizes[layer],
+                                  activations[layer])
+    return output
 
 
 def calculate_accuracy(y, y_pred):
-    """Function that calculates the tensor accuracy"""
-    equal = tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1))
-    accuracy = tf.reduce_mean(tf.cast(equal, tf.float32))
+    """
+    Returns: a tensor containing the decimal accuracy of the prediction
+    """
+    correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_pred, 1))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     return accuracy
 
 
@@ -58,24 +70,29 @@ def calculate_loss(y, y_pred):
 
 
 def create_Adam_op(loss, alpha, beta1, beta2, epsilon):
-    """Function that returns a tensor optimized using Adam"""
-    optimizer = tf.train.AdamOptimizer(alpha, beta1, beta2, epsilon)
-    train = optimizer.minimize(loss)
-    return train
+    """
+    Returns: the Adam optimization operation
+    """
+    adam_optimizer = tf.train.AdamOptimizer(alpha, beta1, beta2, epsilon)
+    trainer = adam_optimizer.minimize(loss)
+    return trainer
 
 
 def learning_rate_decay(alpha, decay_rate, global_step, decay_step):
-    """"Function that returns the learning rate decay"""
+    """
+    Returns: the learning rate decay operation
+    """
     return tf.train.inverse_time_decay(alpha, global_step,
                                        decay_step, decay_rate,
                                        staircase=True)
 
 
 def shuffle_data(X, Y):
-    """Function that returns a shuffled matrix"""
-    perm = X.shape[0]
-    shuff_op = np.random.permutation(perm)
-    return X[shuff_op], Y[shuff_op]
+    """
+    Returns: the shuffled X and Y matrices
+    """
+    shuffled = np.random.permutation(X.shape[0])
+    return X[shuffled, :], Y[shuffled, :]
 
 
 def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
@@ -104,39 +121,48 @@ def model(Data_train, Data_valid, layers, activations, alpha=0.001, beta1=0.9,
     saver = tf.train.Saver()
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
-        b_iter = Data_train[0].shape[0] // batch_size
-        if b_iter % batch_size != 0:
-            b_iter += 1
-            fl = True
+
+        m = X_train.shape[0]
+
+        if m % batch_size == 0:
+            n_batches = m // batch_size
         else:
-            fl = False
-            for i in range(epochs + 1):
-                cos_t, acc_t = sess.run([loss, accuracy],
-                                        {x: Data_train[0], y: Data_train[1]})
-                cos_v, acc_v = sess.run([loss, accuracy],
-                                        {x: Data_valid[0], y: Data_valid[1]})
-                print('After {} epochs:'.format(i))
-                print('\tTraining Cost: {}'.format(cos_t))
-                print('\tTraining Accuracy: {}'.format(acc_t))
-                print('\tValidation Cost: {}'.format(cos_v))
-                print('\tValidation Accuracy: {}'.format(acc_v))
-                if i < epochs:
-                    x_tr, y_tr = shuffle_data(Data_train[0], Data_train[1])
-                    for j in range(b_iter):
-                        start = j * batch_size
-                        if j == b_iter - 1 and fl is True:
-                            final = Data_train[0].shape[0]
-                        else:
-                            final = j * batch_size + batch_size
-                        batch_x = x_tr[start:final]
-                        batch_y = y_tr[start:final]
-                        sess.run([train_op], {x: batch_x, y: batch_y})
-                        if j != 0 and (j + 1) % 100 == 0:
-                            batch_co, batch_ac = sess.run([loss, accuracy],
-                                                          {x: batch_x, y:
-                                                           batch_y})
-                            print('\tStep {}:'.format(j + 1))
-                            print('\t\tCost: {}'.format(batch_co))
-                            print('\t\tAccuracy: {}'.format(batch_ac))
-                sess.run(step_increase)
+            n_batches = m // batch_size + 1
+
+            for epoch in range(epochs + 1):
+                cost_train = sess.run(loss, feed_dict={x: X_train, y: Y_train})
+                accuracy_train = sess.run(accuracy,
+                                          feed_dict={x: X_train, y: Y_train})
+                cost_val = sess.run(loss, feed_dict={x: X_valid, y: Y_valid})
+                accuracy_val = sess.run(accuracy,
+                                        feed_dict={x: X_valid, y: Y_valid})
+                print("After {} epochs:".format(epoch))
+                print("\tTraining Cost: {}".format(cost_train))
+                print("\tTraining Accuracy: {}".format(accuracy_train))
+                print("\tValidation Cost: {}".format(cost_val))
+                print("\tValidation Accuracy: {}".format(accuracy_val))
+
+                if epoch < epochs:
+                    shuffled_X, shuffled_Y = shuffle_data(X_train, Y_train)
+                    for batch in range(n_batches):
+                        start = batch * batch_size
+                        end = (batch + 1) * batch_size
+                        if end > m:
+                            end = m
+                        X_mini_batch = shuffled_X[start:end]
+                        Y_mini_batch = shuffled_Y[start:end]
+                        next_train = {x: X_mini_batch, y: Y_mini_batch}
+                        sess.run(train_op, feed_dict=next_train)
+
+                        if (batch + 1) % 100 == 0 and batch != 0:
+                            loss_mini_batch = sess.run(loss,
+                                                       feed_dict=next_train)
+                            acc_mini_batch = sess.run(accuracy,
+                                                      feed_dict=next_train)
+                            print("\tStep {}:".format(batch + 1))
+                            print("\t\tCost: {}".format(loss_mini_batch))
+                            print("\t\tAccuracy: {}".format(acc_mini_batch))
+
+                sess.run(tf.assign(global_step, global_step + 1))
+
             return saver.save(sess, save_path)
