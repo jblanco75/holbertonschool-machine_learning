@@ -13,7 +13,7 @@ def create_batch_norm_layer(prev, n, activation):
     """
     Returns: a tensor of the activated output for the layer
     """
-    k_init = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    k_init = tf.keras.initializers.VarianceScaling(mode='fan_avg')
     layer = tf.layers.Dense(n, kernel_initializer=k_init)
     mean, variance = tf.nn.moments(layer(prev), axes=[0])
     gamma = tf.Variable(tf.constant(1.0, shape=[n]), trainable=True,
