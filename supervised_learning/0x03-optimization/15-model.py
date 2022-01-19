@@ -9,6 +9,7 @@ descent, learning rate decay, and batch normalization
 
 import numpy as np
 import tensorflow.compat.v1 as tf
+tf.disable_eager_execution()
 
 
 def create_layer(prev, n, activation):
