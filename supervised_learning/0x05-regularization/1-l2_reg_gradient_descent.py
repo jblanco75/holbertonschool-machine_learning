@@ -25,11 +25,11 @@ def l2_reg_gradient_descent(Y, weights, cache, alpha, lambtha, L):
             dz = np.matmul(w_copy["W{}".format(layer + 1)].T,
                            dz) * (1 - A ** 2)
 
-            dw = np.matmul(dz, A1.T) / m
-            dw_l2 = dw + (lambtha / m) * w_copy['W{}'.format(layer)]
-            db = np.sum(dz, axis=1, keepdims=True) / m
-            w = w_copy["W{}".format(layer)]
-            b = w_copy["b{}".format(layer)]
+        dw = np.matmul(dz, A1.T) / m
+        dw_l2 = dw + (lambtha / m) * w_copy['W{}'.format(layer)]
+        db = np.sum(dz, axis=1, keepdims=True) / m
+        w = w_copy["W{}".format(layer)]
+        b = w_copy["b{}".format(layer)]
 
-            weights["W{}".format(layer)] = w - alpha * dw_l2
-            weights["b{}".format(layer)] = b - alpha * db
+        weights["W{}".format(layer)] = w - alpha * dw_l2
+        weights["b{}".format(layer)] = b - alpha * db
