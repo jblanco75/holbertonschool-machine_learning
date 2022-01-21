@@ -22,7 +22,8 @@ def l2_reg_gradient_descent(Y, weights, cache, alpha, lambtha, L):
         if layer == L:
             dz = A - Y
         else:
-            dz = np.matmul(w_copy["W{}".format(layer + 1)].T, dz) * (1 - A ** 2)
+            dz = np.matmul(w_copy["W{}".format(layer + 1)].T,
+                           dz) * (1 - A ** 2)
 
             dw = np.matmul(dz, A1.T) / m
             dw_l2 = dw + (lambtha / m) * w_copy['W{}'.format(layer)]
