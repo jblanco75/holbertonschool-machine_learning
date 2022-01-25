@@ -14,10 +14,8 @@ def train_model(network, data, labels, batch_size, epochs,
     """
     Also trains the model with learning rate decay
     """
-    def scheduler(alpha, decay_rate):
-        return K.optimizers.schedules.InverseTimeDecay(
-            initial_learning_rate=alpha,
-            decay_rate=decay_rate)
+    def scheduler(epoch):
+        return alpha / (1 + decay_rate * epoch)
     callbacks = []
     if early_stopping and validation_data:
         callbacks.append(K.callbacks.EarlyStopping(monitor='val_loss',
