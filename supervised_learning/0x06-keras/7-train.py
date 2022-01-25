@@ -28,10 +28,10 @@ def train_model(network, data, labels, batch_size, epochs,
                                                            verbose=1))
     else:
         callbacks = None
-        return network.fit(x=data, y=labels,
-                           batch_size=batch_size,
-                           epochs=epochs,
-                           validation_data=validation_data,
-                           verbose=verbose,
-                           callbacks=callbacks,
-                           shuffle=shuffle)
+    return network.fit(x=data, y=labels,
+                       batch_size=batch_size,
+                       epochs=epochs,
+                       validation_data=validation_data,
+                       verbose=verbose,
+                       callbacks=callbacks,
+                       shuffle=shuffle)
