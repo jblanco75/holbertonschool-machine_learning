@@ -38,7 +38,9 @@ def pool(images, kernel_shape, stride, mode='max'):
     output = np.zeros((m, o_h, o_w, c))
     for x in range(o_w):
         for y in range(o_h):
-            mat = images[:, y:y+kh, x:x+kw, :]
+            i = y * sh
+            j = x * sw
+            mat = images[:, i:i+kh, j:j+kw, :]
             if mode == 'max':
                 output[:, y, x, :] = np.max(mat, axis=(1, 2))
             elif mode == 'avg':
