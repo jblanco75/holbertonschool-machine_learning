@@ -57,6 +57,6 @@ def convolve_channels(images, kernel, padding='same', stride=(1, 1)):
         for y in range(o_h):
             i = y * sh
             j = x * sw
-            mat = new_padded_images[:, i:i+kh, j:j+kw]
+            mat = new_padded_images[:, i:i+kh, j:j+kw, :]
             output[:, y, x] = np.sum(np.multiply(mat, kernel), axis=(1, 2, 3))
     return output
