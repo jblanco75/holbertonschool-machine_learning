@@ -40,8 +40,8 @@ def convolve(images, kernels, padding='same', stride=(1, 1)):
     nc = kernels.shape[3]
     sh, sw = stride
     if padding == 'same':
-        ph = math.ceil((((h - 1) * sh) + kh - h) // 2)
-        pw = math.ceil((((w - 1) * sw) + kw - w) // 2)
+        ph = ((((h - 1) * sh) + kh - h) // 2) + 1
+        pw = ((((w - 1) * sw) + kw - w) // 2) + 1
     elif padding == 'valid':
         ph = 0
         pw = 0
