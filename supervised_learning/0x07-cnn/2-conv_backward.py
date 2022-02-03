@@ -47,7 +47,6 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
     else:
         ph = 0
         pw = 0
-
     A_prev = np.pad(A_prev, ((0, 0),
                              (ph, ph),
                              (pw, pw),
