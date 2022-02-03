@@ -42,8 +42,8 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
     sh, sw = stride[0], stride[1]
 
     if padding == 'same':
-        ph = (((h_prev - 1) * sh) + kh - h_prev) // 2
-        pw = (((w_prev - 1) * sw) + kw - w_prev) // 2
+        ph = ((((h - 1) * sh) + kh - h) // 2) + 1
+        pw = ((((w - 1) * sw) + kw - w) // 2) + 1
     else:
         ph = 0
         pw = 0
