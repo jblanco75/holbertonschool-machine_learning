@@ -67,5 +67,6 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
                     mat = A_prev[img, i: i + kh, j: j + kw, :]
                     dW[:, :, :, k] += mat * dz
                     dA_prev[img, i: i + kh, j: j + kw, :] += dz * kernel
-    dA_prev = dA_prev[:, ph:-ph, pw:-pw, :]
+    if padding == 'same':
+        dA_prev = dA_prev[:, ph:-ph, pw:-pw, :]
     return dA_prev, dW, db
