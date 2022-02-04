@@ -6,7 +6,6 @@ LeNet-5 architecture using tensorflow 1
 
 
 import tensorflow.compat.v1 as tf
-tf.disable_eager_execution()
 
 
 def lenet5(x, y):
