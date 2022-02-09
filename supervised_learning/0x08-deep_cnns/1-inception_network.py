@@ -6,6 +6,7 @@ described in Going Deeper with Convolutions (2014)
 
 
 import tensorflow.keras as K
+inception_network = __import__('1-inception_network').inception_network
 
 
 def inception_network():
