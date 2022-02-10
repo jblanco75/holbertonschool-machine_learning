@@ -27,22 +27,20 @@ def identity_block(A_prev, filters):
                                kernel_size=(1, 1),
                                padding='same',
                                kernel_initializer=w)(A_prev)
-    BNF11 = K.layers.BatchNormalization(axis=3)(conv_F11)
+    BNF11 = K.layers.BatchNormalization()(conv_F11)
     activ_F11 = K.layers.Activation('relu')(BNF11)
     conv_F3 = K.layers.Conv2D(filters=F3,
                               kernel_size=(3, 3),
                               padding='same',
                               kernel_initializer=w)(activ_F11)
-    BNF3 = K.layers.BatchNormalization(axis=3)(conv_F3)
+    BNF3 = K.layers.BatchNormalization()(conv_F3)
     activ_F3 = K.layers.Activation('relu')(BNF3)
     conv_F12 = K.layers.Conv2D(filters=F12,
                                kernel_size=(1, 1),
                                padding='same',
                                kernel_initializer=w)(activ_F3)
-    BNF12 = K.layers.BatchNormalization(axis=3)(conv_F12)
-    activ_F3 = K.layers.Activation('relu')(BNF12)
-    BNF = K.layers.BatchNormalization(axis=3)(activ_F3)
+    BNF12 = K.layers.BatchNormalization()(conv_F12)
 
-    output = K.layers.Add()([BNF, A_prev])
+    output = K.layers.Add()([BNF12, A_prev])
     activated_output = K.layers.Activation('relu')(output)
     return activated_output
