@@ -17,7 +17,7 @@ def inception_network():
     Returns: the keras model
     """
     w = K.initializers.HeNormal()
-    inputs = K.layers.Input(224, 224, 3)
+    inputs = K.layers.Input(shape=(224, 224, 3))
     conv_1 = K.layers.Conv2D(filters=64,
                              kernel_size=(7, 7),
                              padding='same',
@@ -54,7 +54,7 @@ def inception_network():
     inblock_5a = inception_block(pool_4, [256, 160, 320, 32, 128, 128])
     inblock_5b = inception_block(inblock_5a, [384, 192, 384, 48, 128, 128])
     pool_4 = K.layers.AveragePooling2D(pool_size=7, strides=1,
-                                       padding='same')(inblock_5b)
+                                       padding='valid')(inblock_5b)
     drop_out_layer = K.layers.Dropout(0.4)(pool_4)
     softmax = K.layers.Dense(units=1000, activation='softmax',
                              kernel_initializer=w)(drop_out_layer)
