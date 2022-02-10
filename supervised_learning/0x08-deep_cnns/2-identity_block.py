@@ -43,5 +43,6 @@ def identity_block(A_prev, filters):
     activ_F3 = K.layers.Activation('relu')(BNF12)
     BNF = K.layers.BatchNormalization(axis=3)(activ_F3)
 
-    activated_output = K.layers.Add()([BNF, A_prev])
+    output = K.layers.Add()([BNF, A_prev])
+    activated_output = K.layers.Activation('relu')(output)
     return activated_output
