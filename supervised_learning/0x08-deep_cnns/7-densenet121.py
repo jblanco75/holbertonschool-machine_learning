@@ -22,10 +22,10 @@ def densenet121(growth_rate=32, compression=1.0):
     Returns: the keras model
     """
     w = K.initializers.HeNormal()
-    inputs = K.Input(shape=(224, 224, 3))
+    input_layer = K.Input(shape=(224, 224, 3))
     n_filters = growth_rate * 2
 
-    BN = K.layers.BatchNormalization()(inputs)
+    BN = K.layers.BatchNormalization()(input_layer)
     act_BN = K.layers.Activation('relu')(BN)
     conv_1 = K.layers.Conv2D(filters=n_filters,
                              kernel_size=(7, 7),
@@ -45,5 +45,5 @@ def densenet121(growth_rate=32, compression=1.0):
     pool_2 = K.layers.AveragePooling2D(pool_size=7)(X4)
     softmax = K.layers.Dense(units=1000, activation='softmax',
                              kernel_initializer=w)(pool_2)
-    model = K.Model(inputs=inputs, outputs=softmax)
+    model = K.models.Model(inputs=input_layer, outputs=softmax)
     return model
