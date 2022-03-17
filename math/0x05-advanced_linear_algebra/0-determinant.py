@@ -28,7 +28,7 @@ def determinant(matrix):
         if len(row) != len(matrix):
             raise ValueError("matrix must be a square matrix")
     if len(matrix) == 1:
-            return matrix[0][0]
+        return matrix[0][0]
 
     if len(matrix) == 2:
         return (matrix[0][0] *
