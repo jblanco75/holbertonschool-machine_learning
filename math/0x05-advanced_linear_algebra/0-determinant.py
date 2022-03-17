@@ -34,15 +34,20 @@ def determinant(matrix):
                     matrix[1][1]) - (matrix[0][1] *
                                      matrix[1][0])
 
-        first_row = matrix[0]
-        determ = 0
         cof = 1
-        for i in range(len(matrix[0])):
-            next_matrix = [x[:] for x in matrix]
-            del next_matrix[0]
-            for mat in next_matrix:
-                del mat[i]
-                determ += first_row[i] * determinant(next_matrix) * cof
-                cof = cof * -1
-
-        return determ
+        d = 0
+        for i in range(len(matrix)):
+            element = matrix[0][i]
+            sub_matrix = []
+            for row in range(len(matrix)):
+                if row == 0:
+                    continue
+                new_row = []
+                for column in range(len(matrix)):
+                    if column == i:
+                        continue
+                    new_row.append(matrix[row][column])
+                sub_matrix.append(new_row)
+            d += (element * cof * determinant(sub_matrix))
+            cof *= -1
+        return (d)
