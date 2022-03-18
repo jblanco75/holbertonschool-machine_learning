@@ -135,8 +135,6 @@ def inverse(matrix):
             raise TypeError("matrix must be a list of lists")
         if len(row) != len(matrix):
             raise ValueError("matrix must be a non-empty square matrix")
-    if len(matrix) is 1:
-        return [[1]]
     adj = adjugate(matrix)
     det = determinant(matrix)
     if det == 0:
