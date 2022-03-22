@@ -37,6 +37,6 @@ class MultiNormal:
             raise ValueError("x must have the shape ({}, 1)".format(d))
 
         pdf = (1.0 / (self.stdev *
-                      np.sqrt(2*math.pi))) * np.exp(-0.5*((x - self.mean) /
+                      np.sqrt(2*np.pi))) * np.exp(-0.5*((x - self.mean) /
                                                           self.stdev) ** 2)
         return pdf
