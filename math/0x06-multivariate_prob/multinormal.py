@@ -26,7 +26,6 @@ class MultiNormal:
         self.cov = cov
         self.stdev = np.std(data, axis=1)
 
-
     def pdf(self, x):
         """
         public instance method that calculates the PDF at a data point
@@ -38,7 +37,7 @@ class MultiNormal:
             raise ValueError("x must have the shape ({}, 1)".format(d))
 
         pdf = (1.0 / (self.stdev *
-                      math.sqrt(2*math.pi))) * math.exp(-0.5*((x -
+                      np.sqrt(2*math.pi))) * np.exp(-0.5*((x -
                                                                self.mean) /
                                                               self.stdev) ** 2)
         return pdf
