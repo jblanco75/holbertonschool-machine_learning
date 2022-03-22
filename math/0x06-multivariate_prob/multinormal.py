@@ -38,5 +38,5 @@ class MultiNormal:
 
         pdf = (1.0 / (self.stdev *
                       np.sqrt(2*np.pi))) * np.exp(-0.5*((x - self.mean) /
-                                                          self.stdev) ** 2)
+                                                        self.stdev) ** 2)
         return pdf
