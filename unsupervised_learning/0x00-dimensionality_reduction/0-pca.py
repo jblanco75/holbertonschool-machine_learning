@@ -22,6 +22,8 @@ def pca(X, var=0.95):
     """
     u, s, vh = np.linalg.svd(X)
     total_variance = np.cumsum(s) / np.sum(s)
-    r = (np.argwhere(total_variance >= var))[0, 0]
+    r = 0
+    while total_variance[r] < var:
+        r += 1
     W = vh[:r + 1].T
-    return W’
+    return W
