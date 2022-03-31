@@ -11,7 +11,6 @@ def kmeans(X, k):
     """
     X is a numpy.ndarray of shape (n, d) containing the dataset
     k is the number of clusters
-  
     Returns: C, clss
       C is a numpy.ndarray of shape (k, d) containing the centroid means
       for each cluster
