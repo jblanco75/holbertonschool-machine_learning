@@ -11,7 +11,6 @@ def gmm(X, k):
     """
     X is a numpy.ndarray of shape (n, d) containing the dataset
     k is the number of clusters
-    The only import you are allowed to use is import sklearn.mixture
     Returns: pi, m, S, clss, bic
       pi is a numpy.ndarray of shape (k,) containing the cluster priors
       m is a numpy.ndarray of shape (k, d) containing the centroid means
