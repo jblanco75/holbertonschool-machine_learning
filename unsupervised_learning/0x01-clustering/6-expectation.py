@@ -46,5 +46,5 @@ def expectation(X, pi, m, S):
         pr[i] = pi[i] * pdf(X, m[i], S[i])
     marginal = np.sum(pr, axis=0)
     g = pr / marginal
-    l = np.sum(np.log(marginal))
-    return g, l
+    like = np.sum(np.log(marginal))
+    return g, like
