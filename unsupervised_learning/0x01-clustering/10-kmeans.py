@@ -11,7 +11,7 @@ def kmeans(X, k):
     """
     X is a numpy.ndarray of shape (n, d) containing the dataset
     k is the number of clusters
-    The only import you are allowed to use is import sklearn.cluster
+  
     Returns: C, clss
       C is a numpy.ndarray of shape (k, d) containing the centroid means
       for each cluster
