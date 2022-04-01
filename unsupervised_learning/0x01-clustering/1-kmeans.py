@@ -29,25 +29,29 @@ def kmeans(X, k, iterations=1000):
       clss is a numpy.ndarray of shape (n,) containing the index of
       the cluster in C that each data point belongs to
     """
-    if type(X) is not np.ndarray or len(X.shape) != 2:
+    if type(k) is not int or k <= 0:
         return None, None
-    if type(k) is not int or k <= 0 or k >= X.shape[0]:
+    if type(X) is not np.ndarray or len(X.shape) != 2:
         return None, None
     if type(iterations) is not int or iterations <= 0:
         return None, None
     n, d = X.shape
-    low = np.min(X, axis=0)
-    high = np.max(X, axis=0)
-    C = np.random.uniform(low, high, size=(k, d))
+    C = np.random.uniform(np.min(X, axis=0), np.max(X, axis=0),
+                          size=(k, d))
     for i in range(iterations):
-        C_copy = np.copy(C)
-        distances = np.sqrt(((X - C[:, np.newaxis])**2).sum(axis=-1))
-        clss = np.argmin(distances, axis=0)
-        for k in range(C.shape[0]):
-            if (X[clss == k].size == 0):
-                C[k, :] = np.random.uniform(low, high, size=(1, d))
+        copy = C.copy()
+        D = np.sqrt(((X - C[:, np.newaxis]) ** 2).sum(axis=2))
+        clss = np.argmin(D, axis=0)
+        for j in range(k):
+            if len(X[clss == j]) == 0:
+                C[j] = np.random.uniform(np.min(X, axis=0),
+                                         np.max(X, axis=0),
+                                         size=(1, d))
             else:
-                C[k, :] = (X[clss == k].mean(axis=0))
-        if (C_copy == C).all():
-            return (C, clss)
-    return (C, clss)
+                C[j] = (X[clss == j]).mean(axis=0)
+        D = np.sqrt(((X - C[:, np.newaxis]) ** 2).sum(axis=2))
+        clss = np.argmin(D, axis=0)
+        if np.all(copy == C):
+            return C, clss
+
+    return C, clss
