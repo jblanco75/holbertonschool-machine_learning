@@ -15,23 +15,35 @@ def absorbing(P):
       n is the number of states in the markov chain
     Returns: True if it is absorbing, or False on failure
     """
-    n1, n2 = P.shape
-    if (len(P.shape) != 2):
-        return (None)
-    if (n1 != n2) or (type(P) != np.ndarray):
-        return (None)
-    prob = np.ones((1, n1))
-    if not (np.isclose((np.sum(P, axis=1)), prob)).all():
-        return (None)
-
-    if (np.all(np.diag(P) == 1)):
-        return True
-    if not np.any(np.diagonal(P) == 1):
+    if not isinstance(P, np.ndarray) or P.ndim != 2:
+        return None
+    if P.shape[0] != P.shape[1]:
+        return None
+    n = P.shape[0]
+    if not np.isclose(np.sum(P, axis=1), np.ones(n))[0]:
+        return None
+    if np.all(np.diag(P) != 1):
         return False
+    if np.all(np.diag(P) == 1):
+        return True
+    for i in range(n):
+        if np.any(P[i, :] == 1):
+            continue
+        break
 
-    for i in range(n1):
-        for j in range(n2):
-            if (i == j) and (i + 1 < len(P)):
-                if P[i + 1][j] == 0 and P[i][j + 1] == 0:
-                    return False
-    return True
+    II = P[:i, :i]
+    Id = np.identity(n - i)
+    R = P[i:, :i]
+    Q = P[i:, i:]
+
+    try:
+        F = np.linalg.inv(Id - Q)
+    except Exception:
+        return False
+    FR = np.matmul(F, R)
+    P_b = np.zeros((n, n))
+    P_b[:i, :i] = P[:i, :i]
+    P_b[i:, :i] = FR
+    Q_b = P_b[i:, i:]
+    if np.all(Q_b == 0):
+        return True
