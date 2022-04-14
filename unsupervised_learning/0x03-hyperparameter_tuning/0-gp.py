@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Class GaussianProces that represents a noiseless 1D Gaussian process
+Class that represents a noiseless 1D Gaussian process
 """
 
 
