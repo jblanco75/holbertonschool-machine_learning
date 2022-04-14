@@ -10,7 +10,7 @@ import numpy as np
 class GaussianProcess():
     """class that represents a noiseless 1D Gaussian process"""
 
-    def __init__(self, X_init, Y_init, l=1, sigma_f=1):
+    def __init__(self, X_init, Y_init, l_1=1, sigma_f=1):
         """
         X_init is a numpy.ndarray of shape (t, 1) representing the
         inputs already sampled with the black-box function
@@ -27,7 +27,7 @@ class GaussianProcess():
         """
         self.X = X_init
         self.Y = Y_init
-        self.l = l
+        self.l_1 = l_1
         self.sigma_f = sigma_f
         self.K = self.kernel(X_init, X_init)
 
