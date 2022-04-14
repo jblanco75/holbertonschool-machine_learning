@@ -41,4 +41,4 @@ class GaussianProcess():
         """
         sq_dist = (np.sum(X1**2, 1).reshape(-1, 1)) + \
             (np.sum(X2**2, 1)) - (2 * np.dot(X1, X2.T))
-        return (self.sigma_f**2) * (np.exp(-1/(2 * (self.l**2)) * sq_dist))
+        return (self.sigma_f**2) * (np.exp(-1/(2 * (self.l_1**2)) * sq_dist))
