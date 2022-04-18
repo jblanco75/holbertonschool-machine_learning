@@ -95,18 +95,22 @@ class BayesianOptimization():
             Y_opt is a numpy.ndarray of shape (1,) representing the
             optimal function value
         """
-        X_sample = []
+        positions = []
         for i in range(iterations):
-            X_opt, _ = self.acquisition()
-            if X_opt in X_sample:
+            next_x, ei = self.acquisition()
+            next_y = self.f(next_x)
+            pos = np.argmax(ei)
+            if pos in positions:
+                positions.append(np.argmax(ei))
                 break
-            Y_opt = self.f(X_opt)
-            self.gp.update(X_opt, Y_opt)
-            X_sample.append(X_opt)
+            self.gp.update(next_x, next_y)
+            positions.append(np.argmax(ei))
 
         if self.minimize is True:
-            idx = np.argmin(self.gp.Y)
+            X_next = np.argmin(self.gp.Y)
         else:
-            idx = np.argmax(self.gp.Y)
+            X_next = np.argmax(self.gp.Y)
+        X_op = self.gp.X[X_next]
+        Y_op = self.gp.Y[X_next]
 
-        return self.gp.X[idx], self.gp.Y[idx]
+        return X_op, Y_op
