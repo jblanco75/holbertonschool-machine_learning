@@ -23,7 +23,7 @@ def autoencoder(input_dims, hidden_layers, latent_dims, lambtha):
       auto is the sparse autoencoder model
     """
     input_layer = keras.Input(shape=(input_dims, ))
-    regularizer = keras.regularizers.L1(lambtha)
+    regularizer = keras.regularizers.l1(lambtha)
     encode_layer = keras.layers.Dense(hidden_layers[0],
                                       activity_regularizer=regularizer,
                                       activation='relu')(input_layer)
