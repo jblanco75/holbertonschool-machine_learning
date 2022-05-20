@@ -55,9 +55,6 @@ def data_preprocessing(path_file):
     """
     df = pd.read_csv(path_file)
     # removing the NaN values, invalid values
-    df.rename(columns={'Volume_(Currency)': 'VolumeUSD',
-                       'Volume_(BTC)': 'VolumeBTC'},
-              inplace=True)
     df = df.dropna()
     # getting the decoded date
     df['Timestamp'] = pd.to_datetime(
@@ -65,18 +62,16 @@ def data_preprocessing(path_file):
     # convert the time serie per each hour
     df = df.set_index('Timestamp')
     # selecting the range from the dataset of the data to work with
-
-    df['VolumeUSD'] = df.resample('H').sum()
-    df['Low'] = df.resample('H').min()
-    df['High'] = df.resample('H').max()
-    df['Open'] = df.resample('H').mean()
-    df['Close'] = df.resample('H').mean()
-    df['Weighted_Price'] = df.resample('H').mean()
+    df = df.resample("H").agg({"Open": "mean", "High": "mean",
+                               "Low": "mean", "Close": "mean",
+                               "Volume_(BTC)": "sum",
+                               "Volume_(Currency)": "sum",
+                               "Weighted_Price": "mean"})
     df = df.dropna()
     df = df.iloc[-17000:]
     # selecting the features to take into account
     features_consider = ['Low', 'High',
-                         'VolumeUSD',
+                         'Volume_(Currency)',
                          'Weighted_Price']
     features = df[features_consider]
     # print(features.index)
