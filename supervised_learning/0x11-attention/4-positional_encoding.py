@@ -15,12 +15,15 @@ def positional_encoding(max_seq_len, dm):
     positional encoding vectors
     You should use import numpy as np
     """
-    positional_embeddings = np.zeros((max_seq_len, dm))
+    pos_encoding = np.zeros([max_seq_len, dm])
 
-    for position in range(max_seq_len):
-        for i in range(0, dm, 2):
-            div = np.exp(i * -np.log(10000.0) / dm)
-            positional_embeddings[position, i] = (np.sin(position * div))
-            positional_embeddings[position, i + 1] = (np.cos(position * div))
+    for i in range(dm):
+        for pos in range(max_seq_len):
+            pos_encoding[pos, i] = pos / np.power(10000, (2 * (i // 2) / dm))
 
-    return positional_embeddings
+    # dimension 2i
+    pos_encoding[:, 0::2] = np.sin(pos_encoding[:, 0::2])
+    # dimension 2i + 1
+    pos_encoding[:, 1::2] = np.cos(pos_encoding[:, 1::2])
+
+    return pos_encoding
