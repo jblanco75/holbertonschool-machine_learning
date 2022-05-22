@@ -13,7 +13,6 @@ def positional_encoding(max_seq_len, dm):
     dm is the model depth
     Returns: a numpy.ndarray of shape (max_seq_len, dm) containing the
     positional encoding vectors
-    You should use import numpy as np
     """
     pos_encoding = np.zeros([max_seq_len, dm])
 
