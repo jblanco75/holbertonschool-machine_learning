@@ -47,17 +47,18 @@ class DecoderBlock(tf.keras.layers.Layer):
         Returns: a tensor of shape (batch, target_seq_len, dm) containing
         the block’s output
         """
-        att1, attn_weights_block1 = self.mha1(x, x, x,
-                                              look_ahead_mask)
-        att1 = self.dropout1(att1, training=training)
-        output1 = self.layernorm1(att1 + x)
-        att2, attn_weights_block2 = self.mha2(output1,
-                                              encoder_output,
-                                              encoder_output,
-                                              padding_mask)
-        att2 = self.dropout2(att2, training=training)
-        output2 = self.layernorm2(att2 + output1)
+        attention_output1, _ = self.mha1(x, x, x, look_ahead_mask)
+        attention_output1 = self.dropout1(attention_output1, training=training)
+        output1 = self.layernorm1(x + attention_output1)
 
-        dense_output = self.dropout3(output2, training=training)
-        output3 = self.layernorm3(dense_output + output2)
+        attention_output2, _ = self.mha2(output1, encoder_output,
+                                         encoder_output, padding_mask)
+        attention_output2 = self.dropout2(attention_output2, training=training)
+        output2 = self.layernorm2(output1 + attention_output2)
+
+        dense_output = self.dense_hidden(output2)
+        ffn_output = self.dense_output(dense_output)
+        ffn_output = self.dropout3(ffn_output, training=training)
+        output3 = self.layernorm3(output2 + ffn_output)
+
         return output3
