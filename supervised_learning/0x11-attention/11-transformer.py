@@ -22,6 +22,9 @@ class Transformer(tf.keras.Model):
 
     def call(self, inputs, target, training, encoder_mask, look_ahead_mask,
              decoder_mask):
+        """
+        Returns transformer output
+        """
         encoder_output = self.encoder(inputs, training, encoder_mask)
         decoder_output = self.decoder(target, encoder_output, training,
                                       look_ahead_mask, decoder_mask)
