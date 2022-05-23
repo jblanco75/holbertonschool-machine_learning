@@ -9,7 +9,7 @@ Encoder = __import__('9-transformer_encoder').Encoder
 Decoder = __import__('10-transformer_decoder').Decoder
 
 
-class Transformer(tf.keras.layers.Model):
+class Transformer(tf.keras.Model):
     """
     Class to create an encoder for a transformer
     """
