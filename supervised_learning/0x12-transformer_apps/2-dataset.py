@@ -23,7 +23,7 @@ class Dataset:
                                split="validation",
                                as_supervised=True)
         self.tokenizer_pt, self.tokenizer_en = self.tokenize_dataset(
-            self.data_train)
+            data_train)
         self.data_train = data_train.map(self.tf_encode)
         self.data_valid = data_valid.map(self.tf_encode)
 
